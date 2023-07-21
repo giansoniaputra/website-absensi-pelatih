@@ -30,7 +30,16 @@
                         <div class="col-sm-12">
                             <div class="form-group">
                                 <label for="jenjang">Jenjang</label>
-                                <input type="text" class="form-control" id="jenjang" name="jenjang">
+                                <select class="form-control" name="jenjang" id="jenjang">
+                                    <option selected disabled value="">Pilih Jenjang...</option>
+                                    <option value="SD">SD</option>
+                                    <option value="SMP">SMP</option>
+                                    <option value="MTs">MTs</option>
+                                    <option value="SMA">SMA</option>
+                                    <option value="SMK">SMK</option>
+                                    <option value="MA">MA</option>
+                                    <option value="PERGURUAN TINGGI">PERGURUAN TINGGI</option>
+                                </select>
                             </div>
                         </div>
                     </div>
