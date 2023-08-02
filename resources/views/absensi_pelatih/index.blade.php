@@ -29,6 +29,6 @@
     </div>
     <!-- /.col -->
 </div>
-@include('absensi_pelatih.modal-tambah')
+@include('absensi_pelatih.modal')
 <script src="/js/absensi_pelatih.js"></script>
 @endsection

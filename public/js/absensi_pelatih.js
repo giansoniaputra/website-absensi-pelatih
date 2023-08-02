@@ -92,6 +92,102 @@ $(document).ready(function () {
         });
     });
 
+    //Lihat Kegiatan
+    $("#table-absensi-pelatih").on("click", ".view-button", function () {
+        let kegitan = $(this).attr("data-kegitan");
+        $("#isi-kegiatan").html(kegitan);
+        $("#modal-kegiatan").modal("show");
+    });
+
+    $("#btn-close-kegitan").on("click", function () {
+        $("#isi-kegiatan").html("");
+    });
+
+    //Ambil data yang akan diedit
+    $("#table-absensi-pelatih").on("click", ".edit-button", function () {
+        let unique = $(this).attr("data-unique");
+        $.ajax({
+            url: "/absensi_pelatih/" + unique + "/edit",
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+                $("#method").val("PUT");
+                $("#unique").val(unique);
+                $("#kode_absensi").val(response.data.kode_absensi);
+                $("#pelatih_unique").val(response.data.pelatih_unique);
+                $("#tanggal_absensi").val(response.data.tanggal_absensi);
+                $("#kegiatan").val(response.data.kegiatan);
+                $("#status").val(response.data.status);
+                $("#modal-absensi-pelatih #btn-action").html(
+                    '<button class="btn btn-primary" id="update-data">Update Absensi</button>'
+                );
+                $("#title-modal").html("Edit Data Absensi");
+                $("#modal-absensi-pelatih").modal("show");
+            },
+        });
+    });
+
+    //Action Update Data
+    $("#modal-absensi-pelatih").on("click", "#update-data", function () {
+        let formdata = $("#modal-absensi-pelatih form").serializeArray();
+        let data = {};
+        $(formdata).each(function (index, obj) {
+            data[obj.name] = obj.value;
+        });
+        $.ajax({
+            data: $("#modal-absensi-pelatih form").serialize(),
+            url: "/absensi_pelatih/" + $("#unique").val(),
+            type: "POST",
+            dataType: "json",
+            success: function (response) {
+                if (response.errors) {
+                    displayErrors(response.errors);
+                } else {
+                    $("#method").val("");
+                    $("#unique").val("");
+                    $("#kode_absensi").val("");
+                    $("#tanggal_absensi").val("");
+                    $("#kegiatan").val("");
+                    $("#status").val("");
+                    table.ajax.reload();
+                    $("#modal-absensi-pelatih").modal("hide");
+                    Swal.fire("Good job!", response.success, "success");
+                }
+            },
+        });
+    });
+
+    //HAPUS DATA
+    $("#table-absensi-pelatih").on("click", ".delete-button", function () {
+        let unique = $(this).attr("data-unique");
+        let token = $(this).attr("data-token");
+        Swal.fire({
+            title: "Apakah Kamu Yakin?",
+            text: "Kamu akan menghapus data guru!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, Hapus!",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    data: {
+                        _method: "DELETE",
+                        _token: token,
+                    },
+                    url: "/absensi_pelatih/" + unique,
+                    type: "POST",
+                    dataType: "json",
+                    success: function (response) {
+                        table.ajax.reload();
+                        Swal.fire("Deleted!", response.success, "success");
+                    },
+                });
+            }
+        });
+    });
+
     //Hendler Error
     function displayErrors(errors) {
         // menghapus class 'is-invalid' dan pesan error sebelumnya
